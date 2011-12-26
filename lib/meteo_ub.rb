@@ -49,6 +49,7 @@ class MeteoUB
       end
     
       @dades = {
+        :status => "OK",
         :datetime => @datetime,
         :temperature => @temperature,
         :pressure => @pressure,
@@ -59,6 +60,11 @@ class MeteoUB
       }
     else
       puts "No existeix cap arxiu '#{params[:file]}'"
+      @dades = {
+        :status => "KO",
+        :error => 1,
+        :message => "No s'han pogut obtenir les dades"
+      }
     end
   end
 end
