@@ -2,7 +2,13 @@
 require 'lib/meteo_ub.rb'
 
 meteo = MeteoUB.new
-meteo.parse_file :path => "tmp/www.dat"
+meteo.parse :file => "tmp/www.dat"
 
+# puts meteo.datetime
+# p meteo.dades
 puts meteo.datetime
-p meteo.dades
+puts meteo.sunrise
+puts meteo.sunset
+puts meteo.temperature
+puts meteo.humidity
+puts meteo.pressure
