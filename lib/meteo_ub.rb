@@ -5,14 +5,23 @@
 require 'date'
 
 class MeteoUB
+  # Array de les dades de l'arxiu
   attr_accessor :dades_raw
+  # DateTime del moment de les mesures
   attr_accessor :datetime
+  # Float de la temperatura mitjana (ºC)
   attr_accessor :temperature
+  # Float de la pressió atmosfèrica mitjana (hPa)
   attr_accessor :pressure
+  # Float de la humitat relativa mitjana (%)
   attr_accessor :humidity
+  # DateTime de l'hora de la sortida del Sol
   attr_accessor :sunrise
+  # DateTime de l'hora de la posta del Sol
   attr_accessor :sunset
+  # Retorna un boolean si plou o no
   attr_accessor :plou
+  # Hash de totes dels dades
   attr_accessor :dades
   
   # Inicialització de l'array de les dades de l'arxiu

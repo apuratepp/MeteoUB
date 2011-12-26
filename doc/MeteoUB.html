@@ -125,7 +125,7 @@
 
         <div class="method-description">
         
-        
+        <p>Hash de totes dels dades</p>
         
         </div>
       </div>
@@ -138,7 +138,7 @@
 
         <div class="method-description">
         
-        
+        <p>Array de les dades de l’arxiu</p>
         
         </div>
       </div>
@@ -151,7 +151,7 @@
 
         <div class="method-description">
         
-        
+        <p>DateTime del moment de les mesures</p>
         
         </div>
       </div>
@@ -164,7 +164,7 @@
 
         <div class="method-description">
         
-        
+        <p>Float de la humitat relativa mitjana (%)</p>
         
         </div>
       </div>
@@ -177,7 +177,7 @@
 
         <div class="method-description">
         
-        
+        <p>Retorna un boolean si plou o no</p>
         
         </div>
       </div>
@@ -190,7 +190,7 @@
 
         <div class="method-description">
         
-        
+        <p>Float de la pressió atmosfèrica mitjana (hPa)</p>
         
         </div>
       </div>
@@ -203,7 +203,7 @@
 
         <div class="method-description">
         
-        
+        <p>DateTime de l’hora de la sortida del Sol</p>
         
         </div>
       </div>
@@ -216,7 +216,7 @@
 
         <div class="method-description">
         
-        
+        <p>DateTime de l’hora de la posta del Sol</p>
         
         </div>
       </div>
@@ -229,7 +229,7 @@
 
         <div class="method-description">
         
-        
+        <p>Float de la temperatura mitjana (ºC)</p>
         
         </div>
       </div>
@@ -259,7 +259,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 19</span>
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 28</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
   <span class="ruby-ivar">@dades_raw</span> = []
 <span class="ruby-keyword">end</span></pre>
@@ -295,7 +295,7 @@
 
           
           <div class="method-source-code" id="parse-source">
-            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 24</span>
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 33</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">params</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])
     <span class="ruby-identifier">file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])
