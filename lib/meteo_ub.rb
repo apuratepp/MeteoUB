@@ -86,5 +86,6 @@ class MeteoUB
       return "La posta de Sol està prevista a les #{@sunset.strftime("%H:%M UTC")}"
     end
   end
-  
+
+
 end

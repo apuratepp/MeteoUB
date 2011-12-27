@@ -27,23 +27,38 @@ meteo = MeteoUB.new
 meteo.parse :file => 'tmp/www.dat'
 
 client = Twitter::Client.new
-client.mentions.each do |mention|
-  
-  unless Mention.exists? :tweet_id => mention.id
-    new_mention = Mention.new :tweet_id => mention.id,
-                              :text => mention.text,
-                              :user => mention.user.screen_name,
-                              :user_id => mention.user.id,
-                              :created_at => mention.created_at
 
-    # new_mention.save
-    resposta = meteo.resposta :pregunta => mention.text
-    if resposta != nil
-      missatge = "@#{new_mention.user} #{resposta} (#{meteo.datetime.strftime("%H:%M UTC")})"
-      puts missatge
-      # client.update missatge
+
+case ARGV[0]
+when '--check-mentions':
+  client.mentions.each do |mention|
+    unless Mention.exists? :tweet_id => mention.id
+      new_mention = Mention.new :tweet_id => mention.id,
+                                :text => mention.text,
+                                :user => mention.user.screen_name,
+                                :user_id => mention.user.id,
+                                :created_at => mention.created_at
+
+      # new_mention.save
+      resposta = meteo.resposta :pregunta => mention.text
+      if resposta != nil
+        missatge = "@#{new_mention.user} #{resposta} (#{meteo.datetime.strftime("%H:%M UTC")})"
+        puts missatge
+        # client.update missatge
+      end
     end
   end
+when '--twitter-update':
+  missatge = "#{meteo.temperature}ºC a la Facultat de #Física #UB a les #{meteo.datetime.strftime("%H:%M UTC")}"
+  puts missatge
+  # client.update missatge
+else  
+  puts "Usage:
+      ruby twitter.rb --check-mentions        comprova les mencions i respon
+      ruby twitter.rb --twitter-update        actualitza amb la temperatura actual
+      
+      Més informació: https://github.com/apuratepp/MeteoUB
+"
 end
 
 
