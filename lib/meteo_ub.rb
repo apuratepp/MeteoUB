@@ -1,6 +1,7 @@
 # MeteoUB
-# Tractament de les dades meteorològiques del Departament d'Astronomia i Meteorologia 
-# de la Universitat de Barcelona
+# Tractament de les dades meteorològiques del 
+# Departament d'Astronomia i Meteorologia (Universitat de Barcelona)
+# www.am.ub.es - www.ub.edu/fisica
 
 require 'date'
 
@@ -72,10 +73,17 @@ class MeteoUB
   def resposta(params)
     mention = params[:pregunta]
     paraules = mention.scan(/\w+/)
+    
     if paraules.include? "temperatura"
       return "La temperatura a la Facultat és de #{@temperature}ºC"
     elsif paraules.include? "humitat"
       return "La humitat relativa és del #{@humidity} %"
+    elsif paraules.include? "pressió"
+      return "La pressió és de #{@pressure} hPa"
+    elsif paraules.include? "sortida"
+      return "La sortida del Sol està prevista a les #{@sunrise.strftime("%H:%M UTC")}"
+    elsif paraules.include? "posta"
+      return "La posta de Sol està prevista a les #{@sunset.strftime("%H:%M UTC")}"
     end
   end
   

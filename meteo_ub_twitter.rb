@@ -16,8 +16,6 @@ end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
 
-# Certain methods require authentication. To get your Twitter OAuth credentials,
-# register an app at http://dev.twitter.com/apps
 Twitter.configure do |config|
   config.consumer_key = conf['twitter']['consumer_key']
   config.consumer_secret = conf['twitter']['consumer_secret']
@@ -43,7 +41,6 @@ client.mentions.each do |mention|
     if resposta != nil
       missatge = "@#{new_mention.user} #{resposta} (#{meteo.datetime.strftime("%H:%M UTC")})"
       puts missatge
-      # new_mention.save
       # client.update missatge
     end
   end
