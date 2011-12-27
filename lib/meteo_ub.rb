@@ -67,4 +67,16 @@ class MeteoUB
       }
     end
   end
+  
+  # Mètode per generar resposted adequades a la informació demanada
+  def resposta(params)
+    mention = params[:pregunta]
+    paraules = mention.scan(/\w+/)
+    if paraules.include? "temperatura"
+      return "La temperatura a la Facultat és de #{@temperature}ºC"
+    elsif paraules.include? "humitat"
+      return "La humitat relativa és del #{@humidity} %"
+    end
+  end
+  
 end

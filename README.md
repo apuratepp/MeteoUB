@@ -9,6 +9,8 @@ Utilització
 -----------
 
 ```ruby
+require 'lib/meteo_ub.rb'
+
 meteo = MeteoUB.new
 meteo.parse :file => "tmp/www.dat"
 puts meteo.temperature
