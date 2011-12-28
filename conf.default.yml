@@ -4,3 +4,7 @@
             consumer_secret: ""
             token: ""
             token_secret: ""
+      location:
+            lat: 41.384279
+            long: 2.116877
+      
