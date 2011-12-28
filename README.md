@@ -9,7 +9,7 @@ Utilització
 -----------
 
 ```ruby
-require 'lib/meteo_ub.rb'
+require 'meteo_ub.rb'
 
 meteo = MeteoUB.new
 meteo.parse :file => "tmp/www.dat"

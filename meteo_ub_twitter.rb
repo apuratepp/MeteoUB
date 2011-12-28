@@ -16,6 +16,7 @@ end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
 
+
 Twitter.configure do |config|
   config.consumer_key = conf['twitter']['consumer_key']
   config.consumer_secret = conf['twitter']['consumer_secret']
@@ -25,9 +26,7 @@ end
 
 meteo = MeteoUB.new
 meteo.parse :file => 'tmp/www.dat'
-
 client = Twitter::Client.new
-
 
 case ARGV[0]
 when '--check-mentions':
@@ -42,24 +41,23 @@ when '--check-mentions':
       # new_mention.save
       resposta = meteo.resposta :pregunta => mention.text
       if resposta != nil
-        missatge = "@#{new_mention.user} #{resposta} (#{meteo.datetime.strftime("%H:%M UTC")})"
-        puts missatge
-        # client.update missatge
+        missatge = "@#{new_mention.user} #{resposta} a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}"
+        # client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long'], :in_reply_to_status_id => mention.id)
       end
     end
   end
-when '--twitter-update':
-  missatge = "#{meteo.temperature}ºC a la Facultat de #Física #UB a les #{meteo.datetime.strftime("%H:%M UTC")}"
-  puts missatge
-  # client.update missatge
+when '--update':
+  missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} #Física #UB #Barcelona"
+  # client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long'])
 else  
   puts "Usage:
       ruby twitter.rb --check-mentions        comprova les mencions i respon
-      ruby twitter.rb --twitter-update        actualitza amb la temperatura actual
+      ruby twitter.rb --update                actualitza amb la temperatura actual
       
       Més informació: https://github.com/apuratepp/MeteoUB
 "
 end
+
 
 
 

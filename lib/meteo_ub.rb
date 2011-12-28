@@ -69,6 +69,11 @@ class MeteoUB
     end
   end
   
+  # Mètode per convertir de UTC a hora local amb un offset (integer)
+  def localtime(params)
+    @datetime + params[:offset].hours
+  end
+
   # Mètode per generar resposted adequades a la informació demanada
   def resposta(params)
     mention = params[:pregunta]
