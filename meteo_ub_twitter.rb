@@ -51,8 +51,8 @@ when '--mentions':
 when '--update':
   # Comprovar que les dades siguin de fa menys d'una hora
   if meteo.datetime > (Time.now - 3600)
-    missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} #Física #UB #Barcelona"
-    puts missatge
+    missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} a #Barcelona #Física #UB"
+    # puts missatge
     client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
   else
     puts "Les dades són de fa més d'una hora :("
