@@ -4,7 +4,7 @@ require 'rubygems'
 require 'yaml'
 require 'twitter'
 require 'active_record'
-require 'lib/meteo_ub.rb'
+require File.dirname(__FILE__) + '/lib/meteo_ub.rb'
 
 ActiveRecord::Base.establish_connection(
     :adapter   => "sqlite3",
