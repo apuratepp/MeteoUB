@@ -16,6 +16,7 @@ end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
 
+PUBLISH = conf['publish'] || false
 
 Twitter.configure do |config|
   config.consumer_key = conf['twitter']['consumer_key']
@@ -28,6 +29,8 @@ meteo = MeteoUB.new
 meteo.parse :file => 'tmp/www.dat'
 client = Twitter::Client.new
 
+puts "No s'està publicant el missatge (PUBLISH = #{PUBLISH})" if !PUBLISH
+
 case ARGV[0]
 when '--check-mentions':
   client.mentions.each do |mention|
@@ -38,17 +41,23 @@ when '--check-mentions':
                                 :user_id => mention.user.id,
                                 :created_at => mention.created_at
 
-      # new_mention.save
+      new_mention.save
       resposta = meteo.resposta :pregunta => mention.text
       if resposta != nil
         missatge = "@#{new_mention.user} #{resposta} a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}"
-        # client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long'], :in_reply_to_status_id => mention.id)
+        client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long'], :in_reply_to_status_id => mention.id) if PUBLISH
       end
     end
   end
 when '--update':
-  missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} #Física #UB #Barcelona"
-  # client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long'])
+  # Comprovar que les dades siguin de fa menys d'una hora
+  if meteo.datetime > (Time.now - 3600)
+    missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} #Física #UB #Barcelona"
+    # puts missatge
+    client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
+  else
+    puts "Les dades són de fa més d'una hora :("
+  end
 else  
   puts "Usage:
       ruby twitter.rb --check-mentions        comprova les mencions i respon
