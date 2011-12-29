@@ -15,8 +15,8 @@ class Mention < ActiveRecord::Base
 end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
-
 PUBLISH = conf['publish'] || false
+puts "No s'està publicant el missatge (PUBLISH = #{PUBLISH})" if !PUBLISH
 
 Twitter.configure do |config|
   config.consumer_key = conf['twitter']['consumer_key']
@@ -26,13 +26,12 @@ Twitter.configure do |config|
 end
 
 meteo = MeteoUB.new
-meteo.parse :file => 'tmp/www.dat'
+meteo.parse :file => File.dirname(__FILE__) + '/tmp/www.dat'
+
 client = Twitter::Client.new
 
-puts "No s'està publicant el missatge (PUBLISH = #{PUBLISH})" if !PUBLISH
-
 case ARGV[0]
-when '--check-mentions':
+when '--mentions':
   client.mentions.each do |mention|
     unless Mention.exists? :tweet_id => mention.id
       new_mention = Mention.new :tweet_id => mention.id,
@@ -53,15 +52,15 @@ when '--update':
   # Comprovar que les dades siguin de fa menys d'una hora
   if meteo.datetime > (Time.now - 3600)
     missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} #Física #UB #Barcelona"
-    # puts missatge
+    puts missatge
     client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
   else
     puts "Les dades són de fa més d'una hora :("
   end
 else  
   puts "Usage:
-      ruby twitter.rb --check-mentions        comprova les mencions i respon
-      ruby twitter.rb --update                actualitza amb la temperatura actual
+      ruby twitter.rb --mentions        comprova les mencions i respon
+      ruby twitter.rb --update          actualitza amb la temperatura actual
       
       Més informació: https://github.com/apuratepp/MeteoUB
 "
