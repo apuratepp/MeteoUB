@@ -72,7 +72,11 @@
     
     <li><a href="#method-c-new">::new</a>
     
+    <li><a href="#method-i-localtime">#localtime</a>
+    
     <li><a href="#method-i-parse">#parse</a>
+    
+    <li><a href="#method-i-resposta">#resposta</a>
     
   </ul>
 </nav>
@@ -259,7 +263,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 28</span>
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 29</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
   <span class="ruby-ivar">@dades_raw</span> = []
 <span class="ruby-keyword">end</span></pre>
@@ -279,6 +283,36 @@
       <h3 class="section-header">Public Instance Methods</h3>
 
     
+      <div id="method-i-localtime" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">localtime</span><span
+            class="method-args">(params)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Mètode per convertir de UTC a hora local amb un offset (integer)</p>
+          
+
+          
+          <div class="method-source-code" id="localtime-source">
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 73</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">localtime</span>(<span class="ruby-identifier">params</span>)
+  <span class="ruby-ivar">@datetime</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:offset</span>].<span class="ruby-identifier">hours</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- localtime-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- localtime-method -->
+
+    
       <div id="method-i-parse" class="method-detail ">
         
         <div class="method-heading">
@@ -295,7 +329,7 @@
 
           
           <div class="method-source-code" id="parse-source">
-            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 33</span>
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 34</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">params</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])
     <span class="ruby-identifier">file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:file</span>])
@@ -315,6 +349,7 @@
     <span class="ruby-keyword">end</span>
   
     <span class="ruby-ivar">@dades</span> = {
+      <span class="ruby-value">:status</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;OK&quot;</span>,
       <span class="ruby-value">:datetime</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@datetime</span>,
       <span class="ruby-value">:temperature</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@temperature</span>,
       <span class="ruby-value">:pressure</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@pressure</span>,
@@ -325,6 +360,11 @@
     }
   <span class="ruby-keyword">else</span>
     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;No existeix cap arxiu '#{params[:file]}'&quot;</span>
+    <span class="ruby-ivar">@dades</span> = {
+      <span class="ruby-value">:status</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;KO&quot;</span>,
+      <span class="ruby-value">:error</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>,
+      <span class="ruby-value">:message</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;No s'han pogut obtenir les dades&quot;</span>
+    }
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div><!-- parse-source -->
@@ -335,6 +375,49 @@
 
         
       </div><!-- parse-method -->
+
+    
+      <div id="method-i-resposta" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">resposta</span><span
+            class="method-args">(params)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Mètode per generar resposted adequades a la informació demanada</p>
+          
+
+          
+          <div class="method-source-code" id="resposta-source">
+            <pre><span class="ruby-comment"># File lib/meteo_ub.rb, line 78</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">resposta</span>(<span class="ruby-identifier">params</span>)
+  <span class="ruby-identifier">mention</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:pregunta</span>]
+  <span class="ruby-identifier">paraules</span> = <span class="ruby-identifier">mention</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp">/\w+/</span>)
+  
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">paraules</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&quot;temperatura&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;La temperatura a la Facultat és de #{@temperature}ºC&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">paraules</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&quot;humitat&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;La humitat relativa és del #{@humidity} %&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">paraules</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&quot;pressió&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;La pressió és de #{@pressure} hPa&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">paraules</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&quot;sortida&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;La sortida del Sol està prevista a les #{@sunrise.strftime(&quot;%H:%M UTC&quot;)}&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">paraules</span>.<span class="ruby-identifier">include?</span> <span class="ruby-string">&quot;posta&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;La posta de Sol està prevista a les #{@sunset.strftime(&quot;%H:%M UTC&quot;)}&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- resposta-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- resposta-method -->
 
     
     </section><!-- public-instance-method-details -->
