@@ -15,3 +15,8 @@ meteo = MeteoUB.new
 meteo.parse :file => "tmp/www.dat"
 puts meteo.temperature	# => 13.9
 ```
+
+Todo
+----
+* Twitter: respostes en funció de les mencions
+* Afegir més dades (velcitat del vent, direcció, etc.)
