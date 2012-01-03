@@ -22,8 +22,12 @@ class MeteoUB
   attr_accessor :sunset
   # Retorna un boolean si plou o no
   attr_accessor :plou
+  # Retorna la velocitat del vent
+  attr_accessor :wind_speed
+  
   # Hash de totes dels dades
   attr_accessor :dades
+  
   
   # Inicialització de l'array de les dades de l'arxiu
   def initialize
@@ -35,11 +39,12 @@ class MeteoUB
     if File.exists?(params[:file])
       file = open(params[:file])
       file.each_line { |line| @dades_raw.push(line) }
-      @datetime    = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[1].chomp + " UTC", "%d-%m-%y %k:%M %Z")
-      @temperature = self.dades_raw[4].chomp.to_f
-      @pressure    = self.dades_raw[10].chomp.to_f
-      @humidity    = self.dades_raw[7].chomp.to_f
-      @plou        = self.dades_raw[22].chomp == 1
+      @datetime      = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[1].chomp + " UTC", "%d-%m-%y %k:%M %Z")
+      @temperature   = self.dades_raw[4].chomp.to_f
+      @pressure      = self.dades_raw[10].chomp.to_f
+      @humidity      = self.dades_raw[7].chomp.to_f
+      @plou          = self.dades_raw[22].chomp == 1
+      @wind_speed    = self.dades_raw[12].chomp.to_f
       
       # A vegades el minut el l'arxiu és '60'. S'ha de tenir en compte!
       begin
@@ -55,6 +60,7 @@ class MeteoUB
         :temperature => @temperature,
         :pressure => @pressure,
         :humidity => @humidity,
+        :wind_speed => @wind_speed,
         :plou => @plou,
         :sunrise => @sunrise,
         :sunset => @sunset
