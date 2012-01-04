@@ -20,5 +20,5 @@ p meteo.dades # => {:pressure=>1027.0, :status=>"OK", :humidity=>54.0, :temperat
 
 Todo
 ----
+* Afegir més dades (direcció del vent, etc.)
 * Twitter: respostes en funció de les mencions
-* Afegir més dades (velcitat del vent, direcció, etc.)
