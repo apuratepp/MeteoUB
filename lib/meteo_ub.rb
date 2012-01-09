@@ -10,7 +10,7 @@ class MeteoUB
   attr_accessor :dades_raw
   # DateTime del moment de les mesures
   attr_accessor :datetime
-  # Float de la temperatura mitjana (ºC)
+  # Float de la temperatura mitjana dels últims 10 min (ºC)
   attr_accessor :temperature
   # Float de la pressió atmosfèrica mitjana (hPa)
   attr_accessor :pressure
@@ -21,9 +21,13 @@ class MeteoUB
   # DateTime de l'hora de la posta del Sol
   attr_accessor :sunset
   # Retorna un boolean si plou o no
-  attr_accessor :plou
-  # Retorna la velocitat del vent
-  attr_accessor :wind_speed
+  attr_accessor :rain
+  # Retorna la velocitat de la raxta màxima de vent dels últims 10 min (m/s)
+  attr_accessor :max_wind_speed
+  # Retorna la direcció mitjana del vent dels últims 10 min
+  attr_accessor :wind_direction
+  # Retorna la precipitació acumulada dels últims 10 min (mm)
+  attr_accessor :precipitation
   
   # Hash de totes dels dades
   attr_accessor :dades
@@ -40,11 +44,15 @@ class MeteoUB
       file = open(params[:file])
       file.each_line { |line| @dades_raw.push(line) }
       @datetime      = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[1].chomp + " UTC", "%d-%m-%y %k:%M %Z")
-      @temperature   = self.dades_raw[4].chomp.to_f
-      @pressure      = self.dades_raw[10].chomp.to_f
-      @humidity      = self.dades_raw[7].chomp.to_f
-      @plou          = self.dades_raw[22].chomp == 1
-      @wind_speed    = self.dades_raw[12].chomp.to_f
+      
+      @temperature    = self.dades_raw[2].chomp.to_f  # ºC
+      @pressure       = self.dades_raw[10].chomp.to_f # en hPa
+      @humidity       = self.dades_raw[7].chomp.to_f  # %
+      @rain           = self.dades_raw[22].chomp == 1 # boolean
+      @max_wind_speed = self.dades_raw[12].chomp.to_f # m/s (últims 10 min)
+      @wind_direction = self.dades_raw[13].chomp.to_f # graus meteorologics (últims 10 min)
+      @precipitation  = self.dades_raw[21].chomp.to_f # mm (últims 10 min)
+      
       
       # A vegades el minut el l'arxiu és '60'. S'ha de tenir en compte!
       begin
@@ -60,10 +68,12 @@ class MeteoUB
         :temperature => @temperature,
         :pressure => @pressure,
         :humidity => @humidity,
-        :wind_speed => @wind_speed,
-        :plou => @plou,
+        :max_wind_speed => @max_wind_speed,
+        :wind_direction => @wind_direction,
         :sunrise => @sunrise,
-        :sunset => @sunset
+        :sunset => @sunset,
+        :precipitation => @precipitation,
+        :rain => @rain
       }
     else
       puts "No existeix cap arxiu '#{params[:file]}'"
