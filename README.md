@@ -21,5 +21,5 @@ p meteo.dades # => {:datetime=>#<DateTime: 117884401/48,0,2299161>, :status=>"OK
 
 Todo
 ----
-* Afegir més dades (direcció del vent, etc.)
 * Twitter: respostes en funció de les mencions
+* Twitter: avisos + resum a les 9 de la precipitació
