@@ -57,9 +57,14 @@ when '--update':
   else
     puts "Les dades són de fa més d'una hora :("
   end
+when '--summary':  
+  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, X km/h XYZ // Màx ahir: XX.XºC, min avui: XX.XºC // Sortida: HH:MM, posta: HH:MM"
+  puts missatge.length
+  puts missatge
 else  
   puts "Usage:
       ruby twitter.rb --mentions        comprova les mencions i respon
+      ruby twitter.rb --summary         resum diari amb diverses dades
       ruby twitter.rb --update          actualitza amb la temperatura actual
       
       Més informació: https://github.com/apuratepp/MeteoUB
