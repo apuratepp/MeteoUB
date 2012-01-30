@@ -59,7 +59,7 @@ when '--update':
   end
 when '--summary':  
   # missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, X km/h XYZ // Màx ahir: XX.XºC, min avui: XX.XºC // Sortida: HH:MM, posta: HH:MM"
-  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h} km/h #{meteo.windrose}"
+  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose}"
   # puts missatge
   # Comprovar que les dades siguin de fa menys d'una hora
   if meteo.datetime > (Time.now - 3600)
