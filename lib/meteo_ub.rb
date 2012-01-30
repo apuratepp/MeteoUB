@@ -24,8 +24,12 @@ class MeteoUB
   attr_accessor :rain
   # Retorna la velocitat de la raxta màxima de vent dels últims 10 min (m/s)
   attr_accessor :max_wind_speed
-  # Retorna la direcció mitjana del vent dels últims 10 min
+  # Retorna la velocitat de la ratxa màxima de vent dels últims 10 min (km/h)
+  attr_accessor :max_wind_speed_km_h
+  # Retorna la direcció mitjana del vent dels últims 10 min (º)
   attr_accessor :wind_direction
+  # Retorna la direcció mitjana del vent dels últims 10 min (windrose)
+  attr_accessor :windrose
   # Retorna la precipitació acumulada dels últims 10 min (mm)
   attr_accessor :precipitation
   
@@ -50,8 +54,50 @@ class MeteoUB
       @humidity       = self.dades_raw[7].chomp.to_f  # %
       @rain           = self.dades_raw[22].chomp == 1 # boolean
       @max_wind_speed = self.dades_raw[12].chomp.to_f # m/s (últims 10 min)
+      @max_wind_speed_km_h = @max_wind_speed * 3.6    # km/h (últims 10 min)
       @wind_direction = self.dades_raw[13].chomp.to_f # graus meteorologics (últims 10 min)
       @precipitation  = self.dades_raw[21].chomp.to_f # mm (últims 10 min)
+      
+      # Windrose
+      # http://cbc.riocean.com/wstat/012006rose.html
+      case(self.dades_raw[13].chomp.to_f)
+      when (0..11.25)
+         @windrose = "N"
+       when (11.26..33.75)
+         @windrose = "NNE"
+       when (33.76..56.25)
+         @windrose = "NE"
+       when (56.26..78.75)
+         @windrose = "ENE"
+       when (78.76..101.25)
+         @windrose = "E"
+       when (101.26..123.75)
+         @windrose = "ESE"
+       when (123.76..146.25)
+         @windrose = "SE"
+       when (146.26..168.75)
+         @windrose = "SSE"
+       when (168.76..191.25)
+         @windrose = "S"
+       when (191.16..213.75)
+         @windrose = "SSW"
+       when (213.76..236.25)
+         @windrose = "SW"
+       when (236.26..258.75)
+         @windrose = "WSW"
+       when (258.76..281.25)
+         @windrose = "W"
+       when (281.26..303.75)
+         @windrose = "WNW"
+       when (303.76..326.25)
+         @windrose = "NW"
+       when (326.26..348.75)
+         @windrose = "NNW"
+       when (348.76..360.0)
+         @windrose = "N"
+       else
+         @windrose = "???"
+      end
       
       
       begin
@@ -84,17 +130,18 @@ class MeteoUB
       end
     
       @dades = {
-        :status => "OK",
-        :datetime => @datetime,
-        :temperature => @temperature,
-        :pressure => @pressure,
-        :humidity => @humidity,
-        :max_wind_speed => @max_wind_speed,
-        :wind_direction => @wind_direction,
-        :sunrise => @sunrise,
-        :sunset => @sunset,
-        :precipitation => @precipitation,
-        :rain => @rain
+        :status =>          "OK",
+        :datetime =>        @datetime,
+        :temperature =>     @temperature,
+        :pressure =>        @pressure,
+        :humidity =>        @humidity,
+        :max_wind_speed =>  @max_wind_speed,
+        :wind_direction =>  @wind_direction,
+        :windrose =>        @windrose,
+        :sunrise =>         @sunrise,
+        :sunset =>          @sunset,
+        :precipitation =>   @precipitation,
+        :rain =>            @rain
       }
     else
       puts "No existeix cap arxiu '#{params[:file]}'"
