@@ -54,12 +54,33 @@ class MeteoUB
       @precipitation  = self.dades_raw[21].chomp.to_f # mm (últims 10 min)
       
       
-      # A vegades el minut el l'arxiu és '60'. S'ha de tenir en compte!
       begin
-        @sunrise     = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[19].chomp + " UTC", "%d-%m-%y %k:%M %Z")
-        @sunset      = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[20].chomp + " UTC", "%d-%m-%y %k:%M %Z")
+        sunrise_hh = self.dades_raw[19].chomp.split(":")[0]
+        sunrise_mm = self.dades_raw[19].chomp.split(":")[1]
+        sunset_hh  = self.dades_raw[20].chomp.split(":")[0]
+        sunset_mm  = self.dades_raw[20].chomp.split(":")[1]
+        
+        # A vegades el minut el l'arxiu és '60'. S'ha de tenir en compte!
+        if sunrise_mm == "60"
+          sunrise_mm = 0
+          sunrise_hh = sunrise_hh.to_i + 1
+        end
+        if sunset_mm == "60"
+          sunset_mm = 0
+          sunset_hh = sunset_hh.to_i + 1
+        end
+
+        # @sunrise     = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[19].chomp + " UTC", "%d-%m-%y %k:%M %Z")
+        # @sunset      = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[20].chomp + " UTC", "%d-%m-%y %k:%M %Z")
+        @sunrise     = DateTime.strptime(self.dades_raw[0].chomp + " #{sunrise_hh}:#{sunrise_mm} UTC", "%d-%m-%y %k:%M %Z")
+        @sunset      = DateTime.strptime(self.dades_raw[0].chomp + " #{sunset_hh}:#{sunset_mm} UTC", "%d-%m-%y %k:%M %Z")
       rescue
-        puts "Problema amb les dates de @sunrise o @sunset"
+        puts "---------------------------------------------------------------------"
+        puts "MeteoUB Error: Problema amb les dates de @sunrise o @sunset"
+        puts self.dades_raw[0]
+        puts self.dades_raw[19]
+        puts self.dades_raw[20]
+        puts "---------------------------------------------------------------------"
       end
     
       @dades = {
