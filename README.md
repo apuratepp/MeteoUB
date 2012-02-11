@@ -16,7 +16,7 @@ require 'meteo_ub.rb'
 meteo = MeteoUB.new
 meteo.parse :file => "tmp/www.dat"
 puts meteo.temperature	# => 14.4
-p meteo.dades # => {:datetime=>#<DateTime: 117884401/48,0,2299161>, :status=>"OK", :precipitation=>0.0, :pressure=>1027.0, :temperature=>14.4, :humidity=>54.0, :max_wind_speed=>4.4, :sunrise=>#<DateTime: 1768265861/720,0,2299161>, :wind_direction=>276.0, :sunset=>#<DateTime: 707306453/288,0,2299161>, :rain=>false}
+p meteo.dades # => {:temperature_max=>{:datetime=>#<DateTime: 88414853/36,0,2299161>, :temperature=>11.3}, :datetime=>#<DateTime: 117886531/48,0,2299161>, :status=>"OK", :max_wind_speed=>7.4, :temperature_min=>{:datetime=>#<DateTime: 353659495/144,0,2299161>, :temperature=>3.3}, :pressure=>1019.5, :temperature=>5.8, :humidity=>59.0, :wind_direction=>138.0, :sunrise=>#<DateTime: 1178865019/480,0,2299161>, :windrose=>"SE", :sunset=>#<DateTime: 1768297837/720,0,2299161>, :precipitation=>0.0, :rain=>false}
 
 ```
 
