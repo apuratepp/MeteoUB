@@ -26,7 +26,8 @@ Twitter.configure do |config|
 end
 
 meteo = MeteoUB.new
-meteo.parse :file => File.dirname(__FILE__) + '/tmp/www.dat'
+meteo.parse :file =>      File.dirname(__FILE__) + '/tmp/www.dat', 
+            :extremes =>  File.dirname(__FILE__) + '/tmp/maxmin.dat'
 
 client = Twitter::Client.new
 
@@ -59,8 +60,12 @@ when '--update':
   end
 when '--summary':  
   # missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, X km/h XYZ // Màx ahir: XX.XºC, min avui: XX.XºC // Sortida: HH:MM, posta: HH:MM"
-  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose}"
-  # puts missatge
+  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose} // Màx ahir: #{meteo.temperature_max[:temperature]}ºC, min avui: #{meteo.temperature_min[:temperature]}ºC // Sortida del Sol: #{meteo.sunrise_localtime(:offset => +1).strftime("%H:%M")}, posta: #{meteo.sunset_localtime(:offset => +1).strftime("%H:%M")}"
+  if !PUBLISH
+    puts missatge
+    puts "#{missatge.length} caràcters"
+  end
+  
   # Comprovar que les dades siguin de fa menys d'una hora
   if meteo.datetime > (Time.now - 3600)
     client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH

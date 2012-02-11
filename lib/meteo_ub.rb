@@ -188,6 +188,12 @@ class MeteoUB
   def localtime(params)
     @datetime + params[:offset].hours
   end
+  def sunrise_localtime(params)
+    @sunrise + params[:offset].hours
+  end
+  def sunset_localtime(params)
+    @sunset + params[:offset].hours
+  end
 
   # Mètode per generar resposted adequades a la informació demanada
   def resposta(params)
