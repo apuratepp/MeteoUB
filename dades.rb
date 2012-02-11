@@ -3,7 +3,7 @@
 require 'lib/meteo_ub.rb'
 
 meteo = MeteoUB.new
-meteo.parse :file => "tmp/www.dat"
+meteo.parse :file => "tmp/www.dat", :extremes => "tmp/maxmin.dat"
 
 p meteo.dades
 

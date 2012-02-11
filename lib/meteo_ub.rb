@@ -6,9 +6,12 @@
 require 'date'
 
 class MeteoUB
-  # Array de les dades de l'arxiu
+  # Array de les dades de l'arxiu www.dat
   attr_accessor :dades_raw
-  # DateTime del moment de les mesures
+  # Array de les dades de l'arxiu extremes
+  attr_accessor :extremes_raw
+  
+  # DateTime del moment de les mesures (UTC)
   attr_accessor :datetime
   # Float de la temperatura mitjana dels últims 10 min (ºC)
   attr_accessor :temperature
@@ -32,6 +35,10 @@ class MeteoUB
   attr_accessor :windrose
   # Retorna la precipitació acumulada dels últims 10 min (mm)
   attr_accessor :precipitation
+  # Hahs amb temperatura màxima de les últimes 24h amb datetime (ºC, UTC)
+  attr_accessor :temperature_max
+  # Hash amb temperatura mínima de les últimes 24h amb datetime (ºC, UTC)
+  attr_accessor :temperature_min
   
   # Hash de totes dels dades
   attr_accessor :dades
@@ -40,6 +47,7 @@ class MeteoUB
   # Inicialització de l'array de les dades de l'arxiu
   def initialize
     @dades_raw = []
+    @extremes_raw = []
   end
   
   # Mètode per llegir les dades de l'arxiu en el cas que aquest existeixi
@@ -99,7 +107,7 @@ class MeteoUB
          @windrose = "???"
       end
       
-      
+      # Guardem les hores de sortida i posta de sol
       begin
         sunrise_hh = self.dades_raw[19].chomp.split(":")[0]
         sunrise_mm = self.dades_raw[19].chomp.split(":")[1]
@@ -128,6 +136,27 @@ class MeteoUB
         puts self.dades_raw[20]
         puts "---------------------------------------------------------------------"
       end
+
+      # Arxiu 'maxmin.dat' d'on treiem les temperatures extremes de les últimes 24h
+      if File.exists?(params[:extremes])
+        file_extremes = open(params[:extremes])
+        file_extremes.each_line { |line| @extremes_raw.push(line) }
+
+        # Màxima
+        maxima_temp = self.extremes_raw[0].split(" ")[0].to_f
+        maxima_hour = self.extremes_raw[0].split(" ")[1].chomp
+        maxima_date = self.extremes_raw[0].split(" ")[2].chomp
+        maxima_datetime = DateTime.strptime(maxima_date + " " + maxima_hour + " UTC", "%Y%m%d %H:%M %Z")
+        @temperature_max = {:temperature => maxima_temp, :datetime => maxima_datetime}
+
+        # Mínima
+        minima_temp = self.extremes_raw[1].split(" ")[0].to_f
+        minima_hour = self.extremes_raw[1].split(" ")[1].chomp
+        minima_date = self.extremes_raw[1].split(" ")[2].chomp
+        minima_datetime = DateTime.strptime(minima_date + " " + minima_hour + " UTC", "%Y%m%d %H:%M %Z")
+        @temperature_min = {:temperature => minima_temp, :datetime => minima_datetime}
+        
+      end
     
       @dades = {
         :status =>          "OK",
@@ -141,7 +170,9 @@ class MeteoUB
         :sunrise =>         @sunrise,
         :sunset =>          @sunset,
         :precipitation =>   @precipitation,
-        :rain =>            @rain
+        :rain =>            @rain,
+        :temperature_max => @temperature_max,
+        :temperature_min => @temperature_min
       }
     else
       puts "No existeix cap arxiu '#{params[:file]}'"
