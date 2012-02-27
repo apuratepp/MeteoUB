@@ -13,6 +13,8 @@ ActiveRecord::Base.establish_connection(
 
 class Mention < ActiveRecord::Base 
 end
+class Rain < ActiveRecord::Base
+end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
 PUBLISH = conf['publish'] || false
@@ -67,16 +69,28 @@ when '--summary':
   end
   
   # Comprovar que les dades siguin de fa menys d'una hora
-  if meteo.datetime > (Time.now - 3600)
+  if meteo.datetime > (Time.now - 1.hour)
     client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
   else
     puts "Les dades són de fa més d'una hora :("
+  end
+when '--rain'
+  if !meteo.rain
+    if Rain.all.last.created_at < 6.hours.ago
+      Rain.new(:created_at => Time.now).save
+      missatge = "S'ha detectat que plou al terrat de la Facultat de Física"
+      puts missatge if !PUBLISH
+      client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
+    else
+      puts "Fa menys de 6 hores que ja ha sortit l'avís de que plou"
+    end
   end
 else  
   puts "Usage:
       ruby twitter.rb --mentions        comprova les mencions i respon
       ruby twitter.rb --summary         resum diari amb diverses dades
       ruby twitter.rb --update          actualitza amb la temperatura actual
+      ruby twitter.rb --rain            mostra avís per twitter si està plovent
       
       Més informació: https://github.com/apuratepp/MeteoUB
 "
