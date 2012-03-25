@@ -7,4 +7,5 @@
       location:
             lat: 41.384279
             long: 2.116877
-      publish: false      
+      publish: false
+      time_zone: "CET"

@@ -4,6 +4,7 @@ require 'rubygems'
 require 'yaml'
 require 'twitter'
 require 'active_record'
+require 'active_support/all'
 require File.dirname(__FILE__) + '/lib/meteo_ub.rb'
 
 ActiveRecord::Base.establish_connection(
@@ -18,7 +19,9 @@ end
 
 conf = YAML::load(File.open(File.dirname(__FILE__) + '/conf.yml'))
 PUBLISH = conf['publish'] || false
+
 puts "No s'està publicant el missatge (PUBLISH = #{PUBLISH})" if !PUBLISH
+Time.zone = conf['time_zone'] || 'UTC'
 
 Twitter.configure do |config|
   config.consumer_key = conf['twitter']['consumer_key']
@@ -53,8 +56,9 @@ when '--mentions':
   end
 when '--update':
   # Comprovar que les dades siguin de fa menys d'una hora
-  if meteo.datetime > (Time.now - 3600)
-    missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} a #Barcelona #Física #UB"
+  if meteo.datetime > (Time.now - 1.hour)
+    # missatge = "#{meteo.temperature}ºC a les #{meteo.localtime(:offset => +1).strftime("%H:%M")} a #Barcelona #Física #UB"
+    missatge = "#{meteo.temperature}ºC a les #{meteo.datetime.in_time_zone.strftime("%H:%M")} a #Barcelona #Física #UB"
     # puts missatge
     client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
   else
@@ -62,7 +66,7 @@ when '--update':
   end
 when '--summary':  
   # missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, X km/h XYZ // Màx ahir: XX.XºC, min avui: XX.XºC // Sortida: HH:MM, posta: HH:MM"
-  missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose} // Màx ahir: #{meteo.temperature_max[:temperature]}ºC, min avui: #{meteo.temperature_min[:temperature]}ºC // Sortida del Sol: #{meteo.sunrise_localtime(:offset => +1).strftime("%H:%M")}, posta: #{meteo.sunset_localtime(:offset => +1).strftime("%H:%M")}"
+  missatge = "Dades a les #{meteo.datetime.in_time_zone.strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose} // Màx ahir: #{meteo.temperature_max[:temperature]}ºC, min avui: #{meteo.temperature_min[:temperature]}ºC // Sortida del Sol: #{meteo.sunrise_localtime(:offset => +1).strftime("%H:%M")}, posta: #{meteo.sunset_localtime(:offset => +1).strftime("%H:%M")}"
   if !PUBLISH
     puts missatge
     puts "#{missatge.length} caràcters"
@@ -75,7 +79,7 @@ when '--summary':
     puts "Les dades són de fa més d'una hora :("
   end
 when '--rain'
-  if !meteo.rain
+  if !meteo.rain && meteo.datetime > (Time.now - 1.hour)
     if Rain.all.last.created_at < 6.hours.ago
       Rain.new(:created_at => Time.now).save
       missatge = "S'ha detectat que plou al terrat de la Facultat de Física"
@@ -84,6 +88,8 @@ when '--rain'
     else
       puts "Fa menys de 6 hores que ja ha sortit l'avís de que plou"
     end
+  else
+    # puts "No plou o les dades són de fa més d'1 hora"
   end
 else  
   puts "Usage:
