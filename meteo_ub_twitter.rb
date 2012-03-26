@@ -66,7 +66,7 @@ when '--update':
   end
 when '--summary':  
   # missatge = "Dades a les #{meteo.localtime(:offset => +1).strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, X km/h XYZ // Màx ahir: XX.XºC, min avui: XX.XºC // Sortida: HH:MM, posta: HH:MM"
-  missatge = "Dades a les #{meteo.datetime.in_time_zone.strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose} // Màx ahir: #{meteo.temperature_max[:temperature]}ºC, min avui: #{meteo.temperature_min[:temperature]}ºC // Sortida del Sol: #{meteo.sunrise_localtime(:offset => +1).strftime("%H:%M")}, posta: #{meteo.sunset_localtime(:offset => +1).strftime("%H:%M")}"
+  missatge = "Dades a les #{meteo.datetime.in_time_zone.strftime("%H:%M")}: #{meteo.temperature}ºC, #{meteo.humidity}%, #{meteo.pressure} hPa, #{meteo.max_wind_speed_km_h.to_i} km/h #{meteo.windrose} // Màx ahir: #{meteo.temperature_max[:temperature]}ºC, min avui: #{meteo.temperature_min[:temperature]}ºC // Sortida del Sol: #{meteo.sunrise.in_time_zone.strftime("%H:%M")}, posta: #{meteo.sunset.in_time_zone.strftime("%H:%M")}"
   if !PUBLISH
     puts missatge
     puts "#{missatge.length} caràcters"
