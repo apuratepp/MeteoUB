@@ -57,14 +57,14 @@ class MeteoUB
       file.each_line { |line| @dades_raw.push(line) }
       @datetime      = DateTime.strptime(self.dades_raw[0].chomp + " " + self.dades_raw[1].chomp + " UTC", "%d-%m-%y %k:%M %Z")
       
-      @temperature    = self.dades_raw[2].chomp.to_f  # ºC
-      @pressure       = self.dades_raw[10].chomp.to_f # en hPa
-      @humidity       = self.dades_raw[7].chomp.to_f  # %
-      @rain           = self.dades_raw[22].chomp == 1 # boolean
-      @max_wind_speed = self.dades_raw[12].chomp.to_f # m/s (últims 10 min)
-      @max_wind_speed_km_h = @max_wind_speed * 3.6    # km/h (últims 10 min)
-      @wind_direction = self.dades_raw[13].chomp.to_f # graus meteorologics (últims 10 min)
-      @precipitation  = self.dades_raw[21].chomp.to_f # mm (últims 10 min)
+      @temperature    = self.dades_raw[2].chomp.to_f    # ºC
+      @pressure       = self.dades_raw[10].chomp.to_f   # en hPa
+      @humidity       = self.dades_raw[7].chomp.to_f    # %
+      @rain           = self.dades_raw[22].chomp == "1" # boolean
+      @max_wind_speed = self.dades_raw[12].chomp.to_f   # m/s (últims 10 min)
+      @max_wind_speed_km_h = @max_wind_speed * 3.6      # km/h (últims 10 min)
+      @wind_direction = self.dades_raw[13].chomp.to_f   # graus meteorologics (últims 10 min)
+      @precipitation  = self.dades_raw[21].chomp.to_f   # mm (últims 10 min)
       
       # Windrose
       # http://cbc.riocean.com/wstat/012006rose.html
