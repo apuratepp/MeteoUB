@@ -60,7 +60,7 @@ class MeteoUB
       @temperature    = self.dades_raw[2].chomp.to_f    # ºC
       @pressure       = self.dades_raw[10].chomp.to_f   # en hPa
       @humidity       = self.dades_raw[7].chomp.to_f    # %
-      @rain           = self.dades_raw[22].chomp == "1" # boolean
+      @rain           = self.dades_raw[22].chomp.to_i == 1 # boolean
       @max_wind_speed = self.dades_raw[12].chomp.to_f   # m/s (últims 10 min)
       @max_wind_speed_km_h = @max_wind_speed * 3.6      # km/h (últims 10 min)
       @wind_direction = self.dades_raw[13].chomp.to_f   # graus meteorologics (últims 10 min)
