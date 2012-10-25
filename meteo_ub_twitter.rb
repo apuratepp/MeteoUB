@@ -82,7 +82,7 @@ when '--rain'
   if meteo.rain && meteo.datetime > (Time.now - 1.hour)
     if Rain.all.last.created_at < 6.hours.ago
       Rain.new(:created_at => Time.now).save
-      missatge = "(Avís en proves) S'ha detectat que plou al terrat de la Facultat de Física"
+      missatge = "S'ha detectat que plou al terrat de la Facultat de Física"
       puts missatge if !PUBLISH
       client.update(missatge, :lat => conf['location']['lat'], :long => conf['location']['long']) if PUBLISH
     else
