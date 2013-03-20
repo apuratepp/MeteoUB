@@ -35,7 +35,7 @@ meteo.parse :file =>      File.dirname(__FILE__) + '/tmp/www.dat',
             :extremes =>  File.dirname(__FILE__) + '/tmp/maxmin.dat'
 
 client = Twitter::Client.new
-
+Time.zone = "Europe/Amsterdam"
 case ARGV[0]
 when '--mentions':
   client.mentions.each do |mention|
